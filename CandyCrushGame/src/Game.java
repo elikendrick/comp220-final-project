@@ -7,7 +7,7 @@ public class Game implements Runnable {
 	
 	private Map<Integer, Block> blocks = new HashMap<Integer, Block>();
 	
-	private static int fps, ups;
+	private static int fps, ups, hi;
 	private Window window;
 	private Thread thread;
 	private Random random;
