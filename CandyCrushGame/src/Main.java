@@ -10,7 +10,7 @@ public class Main {
 
 			@Override
 			public void run() {
-				window = new Window(900, 600);
+				window = new Window(1000, 600);
 				game = new Game(window);
 			}
 			
