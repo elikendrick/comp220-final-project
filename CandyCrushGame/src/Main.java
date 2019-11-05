@@ -3,7 +3,7 @@ import javax.swing.SwingUtilities;
 public class Main {
 	
 	private static Window window;
-	private static Game game, hello;
+	private static Game game;
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
