@@ -63,7 +63,7 @@ public class Game implements Runnable {
 		return IDTracker++;
 	}
 	
-	private void update() {
+	private void update() { //main game loop
 		
 	}
 
