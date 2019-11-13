@@ -133,13 +133,13 @@ public class Board {
 		
 		return move;
 	}
-	
-	/**
-	 * move blocks down and fill new spaces
-	 */
-	public void dropBlocks() {
-		
-	}
+//	
+//	/**
+//	 * move blocks down and fill new spaces
+//	 */
+//	public void dropBlocks() {
+//		
+//	}
 	
 	/**
 	 * return all neighboring matching blocks
@@ -147,6 +147,7 @@ public class Board {
 	 * @return
 	 */
 	public ArrayList<Integer> getNeighbors(Integer blockID) {
+		
 		return new ArrayList<Integer>();
 	}
 	
@@ -157,6 +158,10 @@ public class Board {
 	 */
 	public void swapBlocks(Integer blockID1, Integer blockID2) {
 		
+		int swap = tiles.get(blockID1);
+		tiles.set(blockID1, tiles.get(blockID2));
+		tiles.set(blockID2, swap);
+		
 	}
 	
 	/**
@@ -164,7 +169,7 @@ public class Board {
 	 * @param block
 	 */
 	public void removeBlock(Integer blockID) {
-		
+		tiles.set(blockID, Integer.MIN_VALUE);
 	}
 	
 	/**
@@ -172,7 +177,9 @@ public class Board {
 	 * @param blocks
 	 */
 	public void removeBlocks(ArrayList<Integer> blockIDs) {
-		
+		for(int i = 0; i < blockIDs.size(); i++) {
+			tiles.set(blockIDs.get(i), Integer.MIN_VALUE);
+		}
 	}
 	
 	public Integer getBlock(int x, int y) {
