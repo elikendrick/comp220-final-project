@@ -31,6 +31,7 @@ public class Board {
 	 * refills total board with random tiles
 	 */
 	public void refreshBoard() {
+		tiles.clear();
 		for(int h =0; h < height; h++) {
 			for(int w = 0; w < width; w++) {
 				int c = rand.nextInt(6); //6 different color block
@@ -54,7 +55,7 @@ public class Board {
 						emptyC = true; 
 					}
 					else {	//Switch top block 
-						int switchValue = tiles.get(i- j*width);
+						int switchValue = tiles.get(i- j*(width-1));
 						tiles.set(i-j*width, Integer.MIN_VALUE);
 						tiles.set(i, switchValue);
 						emptyC = false;
@@ -74,7 +75,63 @@ public class Board {
 	 * @return
 	 */
 	public boolean movesExist() {
-		return false;
+		boolean move = false;
+		for(int i = 0; i < tiles.size(); i++) {
+			if(i == 0) {//corner 1
+				if (tiles.get(i) == tiles.get(i +1) || tiles.get(i)== tiles.get(i + width)) {
+					move = true;
+					break;
+				}
+			}
+			else if(i == (width - 1)) {//corner 2
+				if(tiles.get(i) == tiles.get(i-1) || tiles.get(i)== tiles.get(i + width))
+				move = true;
+				break;
+			}
+			else if(i == (width*(height - 1)) ) {//corner 3
+				if(tiles.get(i) == tiles.get(i- width) || tiles.get(i)== tiles.get(i + 1))
+				move = true;
+				break;
+			}
+			else if(i == ((width*height) - 1) ) {//corner 4
+				if(tiles.get(i) == tiles.get(i- width) || tiles.get(i)== tiles.get(i - 1))
+				move = true;
+				break;
+			}
+			else if(i < width) {//top row
+				if(tiles.get(i) == tiles.get(i + width) || tiles.get(i) == tiles.get(i+1) || tiles.get(i) == tiles.get(i - 1)) {
+					move = true;
+					break;
+				}
+			}
+			else if(i < width) {//bottom row
+				if(tiles.get(i) == tiles.get(i - width) || tiles.get(i) == tiles.get(i+1) || tiles.get(i) == tiles.get(i - 1)) {
+					move = true;
+					break;
+				}
+			}
+			else if((i%width) == 0 ) {//rigth col
+				if(tiles.get(i) == tiles.get(i - 1) || tiles.get(i) == tiles.get(i+width) || tiles.get(i) == tiles.get(i - width)) {
+					move = true;
+					break;
+				}
+			}
+			else if((i%width) == (width - 1) ) {//left col
+				if(tiles.get(i) == tiles.get(i + 1) || tiles.get(i) == tiles.get(i+width) || tiles.get(i) == tiles.get(i - width)) {
+					move = true;
+					break;
+				}
+			}
+			else {//middle
+				if(tiles.get(i) == tiles.get(i+width) || tiles.get(i) == tiles.get(i - width)||
+						tiles.get(i) == tiles.get(i + 1) || tiles.get(i) == tiles.get(i - 1)) {
+					move = true;
+					break;
+				}
+			}
+		}
+		
+		return move;
 	}
 	
 	/**
