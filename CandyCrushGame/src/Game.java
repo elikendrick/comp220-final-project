@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,9 @@ public class Game implements Runnable {
 	private Random random;
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
+	private Board board;
 	
-	public final int BLOCK_SIZE = 20;
+	public static final int BLOCK_SIZE = 20;
 	
 	private static int IDTracker;
 	
@@ -24,6 +26,7 @@ public class Game implements Runnable {
 		mouseHandler = new MouseHandler();
 		random = new Random();
 		thread = new Thread(this);
+		board = new Board(this);
 		
 		//window.getFrame().addKeyListener(keyHandler);
 		window.getCanvas().addKeyListener(keyHandler);
@@ -33,8 +36,8 @@ public class Game implements Runnable {
 		
 		thread.start();
 		
-		addBlock(50, 100, BLOCK_SIZE);
-		addBlock(200, 300, BLOCK_SIZE);
+		addBlock(50, 100);
+		addBlock(200, 300);
 	}
 	
 	public Map<Integer, Block> getBlocks() {
@@ -45,8 +48,45 @@ public class Game implements Runnable {
 		return blocks.get(ID);
 	}
 	
-	public int addBlock(int x, int y, int size) {
-		Block block = new Block(x, y, size);
+	public static int getBlockSize() {
+		return BLOCK_SIZE;
+	}
+	
+	public Color randomColor() {
+		
+		Color color;
+		
+		int c = random.nextInt(6);
+		
+		switch(c) {
+			case 0:
+				color = Color.RED;
+				break;
+			case 1:
+				color = Color.BLUE;
+				break;
+			case 2:
+				color = Color.YELLOW;
+				break;
+			case 3:
+				color = Color.GREEN;
+				break;
+			case 4:
+				color = Color.ORANGE;
+				break;
+			case 5:
+				color = Color.MAGENTA;
+				break;
+			default:
+				color = Color.BLACK;
+				break;
+		}
+		
+		return color;
+	}
+	
+	public int addBlock(int x, int y) {
+		Block block = new Block(x, y, getBoard());
 		blocks.put(block.getID(), block);
 		return block.getID();
 	}
@@ -65,6 +105,11 @@ public class Game implements Runnable {
 	
 	private void update() { //main game loop
 		
+	}
+	
+	public Board getBoard() {
+		
+		return board;
 	}
 
 	@Override

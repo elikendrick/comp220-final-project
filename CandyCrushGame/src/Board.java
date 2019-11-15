@@ -6,13 +6,14 @@ public class Board {
 	private final int width, height; //number of blocks in each dimension
 	private Random rand;
 	ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
+	private Game game;
 	
 	/**
 	 * default constructor
 	 */
-	public Board() {
+	public Board(Game game) {
 		
-		this(8, 8);
+		this(8, 8, game);
 	}
 	
 	/**
@@ -20,7 +21,8 @@ public class Board {
 	 * @param width
 	 * @param height
 	 */
-	public Board(int width, int height) {
+	public Board(int width, int height, Game game) {
+		this.game = game;
 		this.width = width;
 		this.height = height;
 		tiles = new ArrayList<>();
@@ -63,7 +65,8 @@ public class Board {
 					}
 				}
 				if(emptyC) {
-					tiles.set(i, rand.nextInt(6)); // when column empty block replace by a new
+					//tiles.set(i, rand.nextInt(6)); // when column empty block replace by a new
+					tiles.set(i, game.addBlock(0, 0));
 				}
 			}
 		} 
@@ -188,6 +191,10 @@ public class Board {
 	
 	public void putBlock(Integer blockID, int x, int y) {
 		tiles.set(y*width + x, blockID);
+	}
+	
+	public Game getGame() {
+		return game;
 	}
 
 }
