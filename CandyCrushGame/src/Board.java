@@ -5,6 +5,7 @@ import java.util.Random;
 public class Board {
 	
 	private final int width, height; //number of blocks in each dimension
+	private final int EMPTY;
 	private Random rand;
 	private ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
 	private Game game;
@@ -27,25 +28,32 @@ public class Board {
 		this.game = game;
 		this.width = width;
 		this.height = height;
+		this.EMPTY = Integer.MIN_VALUE;
 		int originX = (Main.getWindow().getFrame().getWidth() - (width * game.getBlockSize())) / 2;
 		int originY = (Main.getWindow().getFrame().getHeight() - (height * game.getBlockSize())) / 2;
 		this.boardOrigin = new Point((int) originX, (int) originY);
 		tiles = new ArrayList<>();
 		rand = new Random();
+		
+		//System.out.println(getIndex(1, 1));
+		createEmptySpaces();
+		fillSpaces();
 	}
 	
 	/**
 	 * refills total board with random tiles
 	 */
 	public void refreshBoard() {
-		tiles.clear();
+		/*tiles.clear();
 		for(int h =0; h < height; h++) {
 			for(int w = 0; w < width; w++) {
 				int c = rand.nextInt(6); //6 different color block
 				tiles.add(c);
 			}
 			//new row
-		}
+		}*/
+		createEmptySpaces();
+		fillSpaces();
 	}
 	
 	/**
@@ -61,10 +69,33 @@ public class Board {
 	}
 	
 	/**
+	 * This method generates an empty board array
+	 * This will override current board!
+	 */
+	public void createEmptySpaces() {
+		tiles.clear();
+		for (int i = 0; i < width*height; i++) {
+			tiles.add(EMPTY);
+		}
+	}
+	
+	/**
 	 * fill all empty spaces after a move
 	 */
 	public void fillSpaces() {
-		for(int i = tiles.size(); i > 0; i--) {// down to up
+		boolean flag = true;
+		while (flag) {
+			flag = false;
+			dropBlocks();
+			for (int i = 0; i < width; i++) {
+				if (getBlock(i, 0) == EMPTY) {
+					putBlock(generateBlock(i, 0), i, 0);
+					flag = true;
+				}
+			}
+		}
+		
+		/*for(int i = tiles.size(); i > 0; i--) {// down to up
 			
 			if(tiles.get(i) == Integer.MIN_VALUE) { //Check if empty
 				boolean emptyC = false;	//empty column
@@ -83,11 +114,12 @@ public class Board {
 				}
 				if(emptyC) {
 					//tiles.set(i, rand.nextInt(6)); // when column empty block replace by a new
+					//System.out.println("Adding block");
 					Point newCoords = getPositionCoords(i);
 					tiles.set(i, game.addBlock(newCoords.x, newCoords.y));
 				}
 			}
-		} 
+		} */
 			
 	}
 	
@@ -154,13 +186,25 @@ public class Board {
 		
 		return move;
 	}
-//	
-//	/**
-//	 * move blocks down and fill new spaces
-//	 */
-//	public void dropBlocks() {
-//		
-//	}
+	
+	/**
+	 * move blocks down and fill new spaces
+	 */
+	public void dropBlocks() {
+		
+		for (int i = 0; i < width; i++) { //scan across board (left to right)
+			for (int j = height - 1; j >= 0; j--) { //scan each column (bottom to top)
+				if (getBlock(i, j) == EMPTY) { //if an empty space is found:
+					for (int k = j; k >= 0; k--) { //scan the part of column above space
+						if (getBlock(i, k) != EMPTY) { //if block is found:
+							putBlock(getBlock(i, k), i, j); //move block to previously found empty space
+							putBlock(EMPTY, i, k); //set found block to empty since it has been moved
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	/**
 	 * return all neighboring matching blocks
@@ -204,13 +248,32 @@ public class Board {
 	}
 	
 	/**
-	 * returns block at given location in board grid
+	 * returns index of given location in board grid
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public Integer getIndex(int x, int y) {
+		return y*width + x;
+	}
+	
+	/**
+	 * returns ID of block at given location in board grid
 	 * @param x
 	 * @param y
 	 * @return
 	 */
 	public Integer getBlock(int x, int y) {
-		return tiles.get(y*width + x);
+		try {
+			return tiles.get(getIndex(x, y));
+		} catch (IndexOutOfBoundsException e) {
+			return EMPTY;
+		}
+	}
+	
+	public Integer generateBlock(int x, int y) {
+		Point newCoords = getPositionCoords(getIndex(x, y));
+		return game.addBlock(newCoords.x, newCoords.y);
 	}
 	
 	/**
@@ -220,7 +283,11 @@ public class Board {
 	 * @param y
 	 */
 	public void putBlock(Integer blockID, int x, int y) {
-		tiles.set(y*width + x, blockID);
+		
+		tiles.set(getIndex(x, y), blockID);
+		if (blockID != EMPTY) {
+			game.getBlock(blockID).move(getPositionCoords(getIndex(x, y)));
+		}
 	}
 	
 	/**

@@ -1,8 +1,9 @@
 import java.awt.Color;
+import java.awt.Point;
 
 public class Block {
 	
-	private int x, y;
+	private Point location;
 	private final int width, height;
 	private final int ID;
 	private Color color;
@@ -10,7 +11,7 @@ public class Block {
 	
 	public Block(int x, int y, Board board) {
 		
-		this(x, y, Game.getBlockSize(), board.getGame().randomColor(), board);
+		this(x, y, Game.getBlockSize(), Game.randomColor(), board);
 	}
 	
 	public Block(int x, int y, Color color, Board board) {
@@ -26,9 +27,16 @@ public class Block {
 		
 		width = size;
 		height = size;
-		this.x = x;
-		this.y = y;
+		this.location = new Point(x, y);
 		this.color = color;
+	}
+	
+	public void move(int x, int y) {
+		this.location.setLocation(x, y);
+	}
+	
+	public void move(Point location) {
+		this.location = location;
 	}
 	
 	public Color getColor() {
@@ -36,11 +44,11 @@ public class Block {
 	}
 	
 	public int getX() {
-		return x;
+		return location.x;
 	}
 	
 	public int getY() {
-		return y;
+		return location.y;
 	}
 	
 	public int getWidth() {

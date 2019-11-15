@@ -11,7 +11,7 @@ public class Game implements Runnable {
 	private static int fps, ups;
 	private Window window;
 	private Thread thread;
-	private Random random;
+	private static Random random;
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
 	private Board board;
@@ -22,6 +22,9 @@ public class Game implements Runnable {
 	
 	public Game(Window window) {
 		this.window = window;
+		
+		this.IDTracker = 0;
+		
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
 		random = new Random();
@@ -32,12 +35,10 @@ public class Game implements Runnable {
 		window.getCanvas().addKeyListener(keyHandler);
 		window.getCanvas().addMouseListener(mouseHandler);
 		
-		this.IDTracker = 0;
-		
 		thread.start();
 		
-		addBlock(50, 100);
-		addBlock(200, 300);
+		//addBlock(50, 100);
+		//addBlock(200, 300);
 	}
 	
 	public Map<Integer, Block> getBlocks() {
@@ -52,7 +53,7 @@ public class Game implements Runnable {
 		return BLOCK_SIZE;
 	}
 	
-	public Color randomColor() {
+	public static Color randomColor() {
 		
 		Color color;
 		
