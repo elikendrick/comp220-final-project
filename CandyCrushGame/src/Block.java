@@ -28,7 +28,7 @@ public class Block {
 		height = size;
 		this.x = x;
 		this.y = y;
-		color = Color.RED;
+		this.color = color;
 	}
 	
 	public Color getColor() {

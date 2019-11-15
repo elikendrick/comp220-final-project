@@ -16,7 +16,7 @@ public class Game implements Runnable {
 	private MouseHandler mouseHandler;
 	private Board board;
 	
-	public static final int BLOCK_SIZE = 20;
+	public static final int BLOCK_SIZE = 40;
 	
 	private static int IDTracker;
 	

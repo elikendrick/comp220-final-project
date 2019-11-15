@@ -6,7 +6,7 @@ public class Board {
 	
 	private final int width, height; //number of blocks in each dimension
 	private Random rand;
-	ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
+	private ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
 	private Game game;
 	private Point boardOrigin;
 	
@@ -27,6 +27,9 @@ public class Board {
 		this.game = game;
 		this.width = width;
 		this.height = height;
+		int originX = (Main.getWindow().getFrame().getWidth() - (width * game.getBlockSize())) / 2;
+		int originY = (Main.getWindow().getFrame().getHeight() - (height * game.getBlockSize())) / 2;
+		this.boardOrigin = new Point((int) originX, (int) originY);
 		tiles = new ArrayList<>();
 		rand = new Random();
 	}
@@ -45,9 +48,16 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * returns canvas coordinates of grid location
+	 * @param index
+	 * @return
+	 */
 	public Point getPositionCoords(int index) {
 		
-		return new Point();
+		int x = (int) (boardOrigin.getX() + (index % this.width) * game.getBlockSize());
+		int y = (int) (boardOrigin.getY() + ((int) index / this.height) * game.getBlockSize());
+		return new Point(x, y);
 	}
 	
 	/**
@@ -73,7 +83,8 @@ public class Board {
 				}
 				if(emptyC) {
 					//tiles.set(i, rand.nextInt(6)); // when column empty block replace by a new
-					tiles.set(i, game.addBlock(0, 0));
+					Point newCoords = getPositionCoords(i);
+					tiles.set(i, game.addBlock(newCoords.x, newCoords.y));
 				}
 			}
 		} 
@@ -192,14 +203,30 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * returns block at given location in board grid
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Integer getBlock(int x, int y) {
 		return tiles.get(y*width + x);
 	}
 	
+	/**
+	 * adds a block to the tiles array at the given grid location
+	 * @param blockID
+	 * @param x
+	 * @param y
+	 */
 	public void putBlock(Integer blockID, int x, int y) {
 		tiles.set(y*width + x, blockID);
 	}
 	
+	/**
+	 * returns game instance associated with this board
+	 * @return
+	 */
 	public Game getGame() {
 		return game;
 	}
