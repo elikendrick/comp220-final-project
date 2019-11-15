@@ -5,7 +5,7 @@ import java.util.Random;
 public class Board {
 	
 	private final int width, height; //number of blocks in each dimension
-	private final int EMPTY;
+	public final int EMPTY;
 	private Random rand;
 	private ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
 	private Game game;
@@ -218,14 +218,17 @@ public class Board {
 	
 	/**
 	 * Swaps position of two blocks
-	 * @param block1
-	 * @param block2
+	 * @param block1 (board index)
+	 * @param block2 (board index)
 	 */
-	public void swapBlocks(Integer blockID1, Integer blockID2) {
+	public void swapBlocks(Integer block1, Integer block2) {
 		
-		int swap = tiles.get(blockID1);
+		int swap = getBlock(block1);
+		putBlock(getBlock(block2), block1);
+		putBlock(swap, block2);
+		/*int swap = tiles.get(blockID1);
 		tiles.set(blockID1, tiles.get(blockID2));
-		tiles.set(blockID2, swap);
+		tiles.set(blockID2, swap);*/
 		
 	}
 	
@@ -264,8 +267,17 @@ public class Board {
 	 * @return
 	 */
 	public Integer getBlock(int x, int y) {
-		try {
+		/*try {
 			return tiles.get(getIndex(x, y));
+		} catch (IndexOutOfBoundsException e) {
+			return EMPTY;
+		}*/
+		return getBlock(getIndex(x, y));
+	}
+	
+	public Integer getBlock(int index) {
+		try {
+			return tiles.get(index);
 		} catch (IndexOutOfBoundsException e) {
 			return EMPTY;
 		}
@@ -288,6 +300,26 @@ public class Board {
 		if (blockID != EMPTY) {
 			game.getBlock(blockID).move(getPositionCoords(getIndex(x, y)));
 		}
+	}
+	
+	public void putBlock(Integer blockID, int index) {
+		
+		tiles.set(index, blockID);
+		if (blockID != EMPTY) {
+			game.getBlock(blockID).move(getPositionCoords(index));
+		}
+	}
+	
+	public Integer findBlock(Integer blockID) {
+		if (!tiles.contains(blockID)) {
+			return EMPTY;
+		}
+		for (int i = 0; i < tiles.size(); i++) {
+			if (getBlock(i) == blockID) {
+				return i;
+			}
+		}
+		return EMPTY;
 	}
 	
 	/**

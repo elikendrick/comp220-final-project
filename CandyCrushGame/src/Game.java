@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.MouseInfo;
+import java.awt.PointerInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +9,9 @@ import java.util.Random;
 public class Game implements Runnable {
 	
 	private Map<Integer, Block> blocks = new HashMap<Integer, Block>();
+	
+	private boolean clicked;
+	private int currentClicked;
 	
 	private static int fps, ups;
 	private Window window;
@@ -24,12 +29,15 @@ public class Game implements Runnable {
 		this.window = window;
 		
 		this.IDTracker = 0;
+		this.clicked = false;
 		
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
 		random = new Random();
 		thread = new Thread(this);
 		board = new Board(this);
+		
+		currentClicked = board.EMPTY;
 		
 		//window.getFrame().addKeyListener(keyHandler);
 		window.getCanvas().addKeyListener(keyHandler);
@@ -93,10 +101,16 @@ public class Game implements Runnable {
 	}
 	
 	public void blockClicked(int blockID) {
+		clicked = true;
+		currentClicked = blockID;
+		
 		System.out.println(blockID);
+		board.swapBlocks(1, 2);
 	}
 	
 	public void blockReleased(int blockID) {
+		clicked = false;
+		
 		System.out.println(blockID);
 	}
 	
@@ -106,6 +120,21 @@ public class Game implements Runnable {
 	
 	private void update() { //main game loop
 		
+		if (clicked) {
+			int mouseX = MouseInfo.getPointerInfo().getLocation().x - Main.getWindow().getCanvas().getLocationOnScreen().x;
+			int mouseY = MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y;
+			
+			Block block;
+			for (Integer blockID : Main.getGame().getBlocks().keySet()) {
+				block = Main.getGame().getBlock(blockID);
+				if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
+					int index = board.findBlock(blockID);
+					//swap this block with the currentClicked block
+					break;
+				}
+			}
+			//System.out.println(MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y);
+		}
 	}
 	
 	public Board getBoard() {
@@ -115,8 +144,8 @@ public class Game implements Runnable {
 
 	@Override
 	public void run() {
-		int updatesPerSecond = 50;
-		int framesPerSecond = 50;
+		int updatesPerSecond = 20;
+		int framesPerSecond = 20;
 		long gameSkipTicks = 1000 / updatesPerSecond;
 		long frameSkipTicks = 1000 / framesPerSecond;
 		long maxFrameSkips = 5;
