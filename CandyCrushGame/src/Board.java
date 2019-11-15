@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -7,6 +8,7 @@ public class Board {
 	private Random rand;
 	ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
 	private Game game;
+	private Point boardOrigin;
 	
 	/**
 	 * default constructor
@@ -41,6 +43,11 @@ public class Board {
 			}
 			//new row
 		}
+	}
+	
+	public Point getPositionCoords(int index) {
+		
+		return new Point();
 	}
 	
 	/**
