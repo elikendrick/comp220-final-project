@@ -25,6 +25,10 @@ public class Game implements Runnable {
 	
 	private static int IDTracker;
 	
+	/**
+	 * Creates new game in the specified window.
+	 * @param window
+	 */
 	public Game(Window window) {
 		this.window = window;
 		
@@ -49,18 +53,35 @@ public class Game implements Runnable {
 		//addBlock(200, 300);
 	}
 	
+	/**
+	 * Returns Map<Integer, Block> of all registered blocks paired with their ID number.
+	 * @return
+	 */
 	public Map<Integer, Block> getBlocks() {
 		return blocks;
 	}
 	
+	/**
+	 * Returns block with specified ID.
+	 * @param ID
+	 * @return
+	 */
 	public Block getBlock(int ID) {
 		return blocks.get(ID);
 	}
 	
+	/**
+	 * Returns default block size in pixels.
+	 * @return
+	 */
 	public static int getBlockSize() {
 		return BLOCK_SIZE;
 	}
 	
+	/**
+	 * Returns a random block color.
+	 * @return
+	 */
 	public static Color randomColor() {
 		
 		Color color;
@@ -94,30 +115,53 @@ public class Game implements Runnable {
 		return color;
 	}
 	
+	/**
+	 * Creates a block with a random color on the current board at the specified pixel coordinates.
+	 * Returns ID of new block.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public int addBlock(int x, int y) {
 		Block block = new Block(x, y, getBoard());
 		blocks.put(block.getID(), block);
 		return block.getID();
 	}
 	
+	/**
+	 * Method called when mouse is clicked on a block.
+	 * @param blockID
+	 */
 	public void blockClicked(int blockID) {
 		clicked = true;
 		currentClicked = blockID;
 		
 		System.out.println(blockID);
-		board.swapBlocks(1, 2);
+		//board.swapBlocks(1, 2);
 	}
 	
+	/**
+	 * Method called when mouse is released on a block.
+	 * @param blockID
+	 */
 	public void blockReleased(int blockID) {
 		clicked = false;
 		
 		System.out.println(blockID);
 	}
 	
+	/**
+	 * Returns next available ID number.
+	 * @return
+	 */
 	public static int newID() {
 		return IDTracker++;
 	}
 	
+	/**
+	 * Main game loop.
+	 * Called every game tick.
+	 */
 	private void update() { //main game loop
 		
 		if (clicked) {
@@ -129,6 +173,12 @@ public class Game implements Runnable {
 				block = Main.getGame().getBlock(blockID);
 				if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
 					int index = board.findBlock(blockID);
+					int ID = board.getBlock(index);
+					if (board.getNeighbors(currentClicked).contains(ID)) {
+						board.swapBlocks(board.findBlock(currentClicked), index);
+						clicked = false;
+						currentClicked = Board.EMPTY;
+					}
 					//swap this block with the currentClicked block
 					break;
 				}

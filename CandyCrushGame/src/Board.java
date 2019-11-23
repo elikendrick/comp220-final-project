@@ -5,11 +5,13 @@ import java.util.Random;
 public class Board {
 	
 	private final int width, height; //number of blocks in each dimension
-	public final int EMPTY;
+	public static final int EMPTY = Integer.MIN_VALUE;
 	private Random rand;
 	private ArrayList<Integer> tiles; //IDs of block on board, empty space designated by Integer.minValue()
 	private Game game;
 	private Point boardOrigin;
+	
+	private int score;
 	
 	/**
 	 * default constructor
@@ -28,10 +30,12 @@ public class Board {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		this.EMPTY = Integer.MIN_VALUE;
+		//this.EMPTY = Integer.MIN_VALUE;
 		int originX = (Main.getWindow().getFrame().getWidth() - (width * game.getBlockSize())) / 2;
 		int originY = (Main.getWindow().getFrame().getHeight() - (height * game.getBlockSize())) / 2;
 		this.boardOrigin = new Point((int) originX, (int) originY);
+		this.score = 0;
+		
 		tiles = new ArrayList<>();
 		rand = new Random();
 		
@@ -57,7 +61,7 @@ public class Board {
 	}
 	
 	/**
-	 * returns canvas coordinates of grid location
+	 * returns canvas coordinates of grid index location
 	 * @param index
 	 * @return
 	 */
@@ -65,6 +69,18 @@ public class Board {
 		
 		int x = (int) (boardOrigin.getX() + (index % this.width) * game.getBlockSize());
 		int y = (int) (boardOrigin.getY() + ((int) index / this.height) * game.getBlockSize());
+		return new Point(x, y);
+	}
+	
+	/**
+	 * returns grid location of grid index location
+	 * @param index
+	 * @return
+	 */
+	public Point getPosition(int index) {
+		
+		int x = index % this.width;
+		int y = index / this.height;
 		return new Point(x, y);
 	}
 	
@@ -213,7 +229,23 @@ public class Board {
 	 */
 	public ArrayList<Integer> getNeighbors(Integer blockID) {
 		
-		return new ArrayList<Integer>();
+		ArrayList<Integer> neighbors = new ArrayList<Integer>();
+		Point loc = getPosition(findBlock(blockID));
+		
+		if (loc.x - 1 >= 0) {
+			neighbors.add(getBlock(loc.x - 1, loc.y));
+		}
+		if (loc.y - 1 >= 0) {
+			neighbors.add(getBlock(loc.x, loc.y - 1));
+		}
+		if (loc.x + 1 < width) {
+			neighbors.add(getBlock(loc.x + 1, loc.y));
+		}
+		if (loc.y + 1 < height) {
+			neighbors.add(getBlock(loc.x, loc.y + 1));
+		}
+		
+		return neighbors;
 	}
 	
 	/**
@@ -229,6 +261,34 @@ public class Board {
 		/*int swap = tiles.get(blockID1);
 		tiles.set(blockID1, tiles.get(blockID2));
 		tiles.set(blockID2, swap);*/
+		
+	}
+	
+	/**
+	 * Attempt to swap given block indices.
+	 * If not match is made, swap blocks back.
+	 * @param block1 (board index)
+	 * @param block2 (board index)
+	 */
+	public void attemptSwap(Integer block1, Integer block2) {
+		
+		swapBlocks(block1, block2);
+	}
+	
+	/**
+	 * Returns true if three or more neighboring blocks match.
+	 * Else, return false.
+	 * @return
+	 */
+	public boolean matchesExist() {
+		
+		return true;
+	}
+	
+	/**
+	 * Destory all sets of matching blocks and increment score.
+	 */
+	public void scoreMatches() {
 		
 	}
 	
@@ -261,7 +321,7 @@ public class Board {
 	}
 	
 	/**
-	 * returns ID of block at given location in board grid
+	 * returns ID of block at given location in board grid.
 	 * @param x
 	 * @param y
 	 * @return
@@ -275,6 +335,11 @@ public class Board {
 		return getBlock(getIndex(x, y));
 	}
 	
+	/**
+	 * Returns ID of block at given index in the board grid.
+	 * @param index
+	 * @return
+	 */
 	public Integer getBlock(int index) {
 		try {
 			return tiles.get(index);
@@ -283,6 +348,13 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Creates new block at specified grid location.
+	 * Returns ID of created block.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Integer generateBlock(int x, int y) {
 		Point newCoords = getPositionCoords(getIndex(x, y));
 		return game.addBlock(newCoords.x, newCoords.y);
@@ -302,6 +374,11 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * adds a block to the tiles array at the given board index
+	 * @param blockID
+	 * @param index
+	 */
 	public void putBlock(Integer blockID, int index) {
 		
 		tiles.set(index, blockID);
@@ -310,6 +387,12 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Returns board index of position containing block with blockID.
+	 * Returns Block.EMPTY if board does not contain specified block.
+	 * @param blockID
+	 * @return
+	 */
 	public Integer findBlock(Integer blockID) {
 		if (!tiles.contains(blockID)) {
 			return EMPTY;

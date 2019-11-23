@@ -32,7 +32,7 @@ public class MouseHandler implements MouseListener {
 	}
 	
 	private void click(Point point, boolean state) {
-		System.out.println(point);
+		//System.out.println(point);
 		Block block;
 		for (Integer blockID : Main.getGame().getBlocks().keySet()) {
 			block = Main.getGame().getBlock(blockID);
@@ -44,6 +44,10 @@ public class MouseHandler implements MouseListener {
 				}
 				break;
 			}
+		}
+		
+		if (!state) {
+			Main.getGame().blockReleased(Board.EMPTY);
 		}
 		
 	}
