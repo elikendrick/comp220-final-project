@@ -172,10 +172,8 @@ public class Game implements Runnable {
 			for (Integer blockID : Main.getGame().getBlocks().keySet()) {
 				block = Main.getGame().getBlock(blockID);
 				if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
-					int index = board.findBlock(blockID);
-					int ID = board.getBlock(index);
-					if (board.getNeighbors(currentClicked).contains(ID)) {
-						board.swapBlocks(board.findBlock(currentClicked), index);
+					if (board.getNeighbors(currentClicked).contains(blockID)) {
+						board.attemptSwap(currentClicked, blockID);
 						clicked = false;
 						currentClicked = Board.EMPTY;
 					}

@@ -265,31 +265,25 @@ public class Board {
 	}
 	
 	/**
-	 * Attempt to swap given block indices.
+	 * Attempt to swap given blocks.
 	 * If not match is made, swap blocks back.
-	 * @param block1 (board index)
-	 * @param block2 (board index)
+	 * @param block1 (block ID)
+	 * @param block2 (block ID)
 	 */
 	public void attemptSwap(Integer block1, Integer block2) {
 		
-		swapBlocks(block1, block2);
+		swapBlocks(findBlock(block1), findBlock(block2));
 	}
 	
 	/**
-	 * Returns true if three or more neighboring blocks match.
-	 * Else, return false.
+	 * Determine if three or more neighboring blocks match.
+	 * Destroy all sets of matching blocks and track score of destroyed blocks.
+	 * Return score of destroyed blocks (should return 0 if no blocks were destroyed)
 	 * @return
 	 */
-	public boolean matchesExist() {
+	public int scoreMatches() {
 		
-		return true;
-	}
-	
-	/**
-	 * Destory all sets of matching blocks and increment score.
-	 */
-	public void scoreMatches() {
-		
+		return 0;
 	}
 	
 	/**
