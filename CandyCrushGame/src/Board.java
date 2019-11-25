@@ -282,8 +282,25 @@ public class Board {
 	 * @return
 	 */
 	public int scoreMatches() {
+		int numScores = 0;
+		for(int i = 0; i < tiles.size(); i++) {	//check all the block
+			ArrayList<Integer> neighbors = new ArrayList<>(); // neighbors for each block
+			neighbors = getNeighbors(tiles.get(i));
+			
+			if(neighbors.size() > 3 || neighbors.size() == 3) {//three or more neighbors
+				
+				for(int j = 0; j < neighbors.size(); j++) {//remove each one of them
+					
+					if(neighbors.get(j) != Integer.MIN_VALUE) {//only count new neighbors
+						removeBlock(neighbors.get(j));
+						numScores++; //update scores for new empty block
+					}
+				}
+			}
+			
+		}
 		
-		return 0;
+		return numScores;
 	}
 	
 	/**
