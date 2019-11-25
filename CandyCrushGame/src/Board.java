@@ -400,6 +400,14 @@ public class Board {
 	}
 	
 	/**
+	 * Returns list of block IDs currently on the board.
+	 * @return
+	 */
+	public ArrayList<Integer> getBlocks() {
+		return tiles;
+	}
+	
+	/**
 	 * returns game instance associated with this board
 	 * @return
 	 */

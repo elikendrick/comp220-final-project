@@ -15,6 +15,9 @@ public class Canvas extends JPanel {
 	
 	//private static int fps, ups;
 	
+	/**
+	 * Default constructor.
+	 */
 	public Canvas() {
 		//this.frame = frame;
 		//random = new Random();
@@ -28,6 +31,9 @@ public class Canvas extends JPanel {
 		//thread.start();
 	}
 	
+	/**
+	 * Draw method.
+	 */
 	public void paintComponent(Graphics g) {
 		g.clearRect(0, 0, Main.getWindow().getFrame().getWidth(), Main.getWindow().getFrame().getHeight());
 		g.setColor(Color.WHITE);
@@ -35,7 +41,7 @@ public class Canvas extends JPanel {
 		
 		for (Block block : Main.getGame().getBlocks().values()) {
 			g.setColor(block.getColor());
-			g.fillRect(block.getX(), block.getY(), block.getWidth(), block.getHeight());
+			g.fillRect(block.getDrawX(), block.getDrawY(), block.getWidth(), block.getHeight());
 		}
 	}
 	

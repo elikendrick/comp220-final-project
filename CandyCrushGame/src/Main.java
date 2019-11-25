@@ -5,6 +5,10 @@ public class Main {
 	private static Window window;
 	private static Game game;
 	
+	/**
+	 * Main method creates new window and game objects.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 
@@ -17,10 +21,18 @@ public class Main {
 		});
 	}
 	
+	/**
+	 * Returns current instance of Game.
+	 * @return
+	 */
 	public static Game getGame() {
 		return game;
 	}
 	
+	/**
+	 * Returns current instance of Window.
+	 * @return
+	 */
 	public static Window getWindow() {
 		return window;
 	}

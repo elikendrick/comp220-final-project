@@ -183,6 +183,10 @@ public class Game implements Runnable {
 			}
 			//System.out.println(MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y);
 		}
+		
+		for (Integer blockID : getBoard().getBlocks()) {
+			blocks.get(blockID).updateAnimation();
+		}
 	}
 	
 	public Board getBoard() {
