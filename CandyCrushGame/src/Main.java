@@ -6,7 +6,7 @@ public class Main {
 	private static Game game;
 	
 	/**
-	 * Main method creates new window and game objects.
+	 * Main method creates new window and game objects
 	 * @param args
 	 */
 	public static void main(String[] args) {
