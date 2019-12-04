@@ -174,6 +174,7 @@ public class Game implements Runnable {
 				if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
 					if (board.getNeighbors(currentClicked).contains(blockID)) {
 						board.attemptSwap(currentClicked, blockID);
+						board.tidyBoard();
 						clicked = false;
 						currentClicked = Board.EMPTY;
 					}

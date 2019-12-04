@@ -1,6 +1,9 @@
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 public class Board {
 	
@@ -18,7 +21,7 @@ public class Board {
 	 */
 	public Board(Game game) {
 		
-		this(8, 8, game);
+		this(4, 4, game);
 	}
 	
 	/**
@@ -57,7 +60,8 @@ public class Board {
 			//new row
 		}*/
 		createEmptySpaces();
-		fillSpaces();
+		//fillSpaces();
+		tidyBoard(); //Fills all spaces, checks if any blocks can be scored, then refills spaces again in a loop
 	}
 	
 	/**
@@ -93,6 +97,12 @@ public class Board {
 		for (int i = 0; i < width*height; i++) {
 			tiles.add(EMPTY);
 		}
+	}
+	
+	public void tidyBoard() {
+		do {
+			fillSpaces();
+		} while (scoreMatches() > 0);
 	}
 	
 	/**
@@ -233,16 +243,29 @@ public class Board {
 		Point loc = getPosition(findBlock(blockID));
 		
 		if (loc.x - 1 >= 0) {
-			neighbors.add(getBlock(loc.x - 1, loc.y));
+			int neighbor = getBlock(loc.x - 1, loc.y);
+			//neighbors.add(getBlock(loc.x - 1, loc.y));
+			if (neighbor != EMPTY) {
+				neighbors.add(neighbor);
+			}
 		}
 		if (loc.y - 1 >= 0) {
-			neighbors.add(getBlock(loc.x, loc.y - 1));
+			int neighbor = getBlock(loc.x, loc.y - 1);
+			if (neighbor != EMPTY) {
+				neighbors.add(neighbor);
+			}
 		}
 		if (loc.x + 1 < width) {
-			neighbors.add(getBlock(loc.x + 1, loc.y));
+			int neighbor = getBlock(loc.x + 1, loc.y);
+			if (neighbor != EMPTY) {
+				neighbors.add(neighbor);
+			}
 		}
 		if (loc.y + 1 < height) {
-			neighbors.add(getBlock(loc.x, loc.y + 1));
+			int neighbor = getBlock(loc.x, loc.y + 1);
+			if (neighbor != EMPTY) {
+				neighbors.add(neighbor);
+			}
 		}
 		
 		return neighbors;
@@ -273,6 +296,9 @@ public class Board {
 	public void attemptSwap(Integer block1, Integer block2) {
 		
 		swapBlocks(findBlock(block1), findBlock(block2));
+		if (scoreMatches() <= 0) {
+			swapBlocks(findBlock(block1), findBlock(block2));
+		}
 	}
 	
 	/**
@@ -284,10 +310,57 @@ public class Board {
 	public int scoreMatches() {
 		int numScores = 0;
 		for(int i = 0; i < tiles.size(); i++) {	//check all the block
-			ArrayList<Integer> neighbors = new ArrayList<>(); // neighbors for each block
-			neighbors = getNeighbors(tiles.get(i));
+			if (getBlock(i) == EMPTY) {
+				continue;
+			}
 			
-			if(neighbors.size() > 3 || neighbors.size() == 3) {//three or more neighbors
+			Set<Integer> matchingBlocks = new HashSet<Integer>();
+			matchingBlocks.add(getBlock(i));
+			
+			Set<Integer> blocksToCheck = new HashSet<Integer>();
+			Set<Integer> removeFromBlocksToCheck = new HashSet<Integer>();
+			Set<Integer> addToBlocksToCheck = new HashSet<Integer>();
+			blocksToCheck.addAll(getNeighbors(tiles.get(i)));
+			
+			while (blocksToCheck.size() > 0) {
+				//Iterator<Integer> toCheck = blocksToCheck.iterator();
+				for (int check : blocksToCheck) {
+					System.out.println(game.getBlocks().containsKey(check) + " : " + check);
+					System.out.println(game.getBlocks().containsKey(getBlock(i)) + " :: " + getBlock(i));
+					if (game.getBlock(check).getColor() == game.getBlock(getBlock(i)).getColor()) {
+						matchingBlocks.add(check);
+						for (int neighbor : getNeighbors(check)) {
+							if (!matchingBlocks.contains(neighbor)) {
+								//blocksToCheck.add(neighbor);
+								addToBlocksToCheck.add(neighbor);
+							}
+						}
+					}
+					//blocksToCheck.remove(check);
+					removeFromBlocksToCheck.add(check);
+				}
+				for (int block : addToBlocksToCheck) {
+					blocksToCheck.add(block);
+				}
+				for (int block : removeFromBlocksToCheck) {
+					blocksToCheck.remove(block);
+				}
+				addToBlocksToCheck.clear();
+				removeFromBlocksToCheck.clear();
+			}
+			
+			if (matchingBlocks.size() >= 3) {
+				numScores += matchingBlocks.size();
+				for (int blockID : matchingBlocks) {
+					tiles.set(findBlock(blockID), EMPTY);
+				}
+			}
+			//ArrayList<Integer> neighbors; // neighbors for each block
+			//neighbors = getNeighbors(tiles.get(i));
+			
+			
+			
+			/*if(neighbors.size() > 3 || neighbors.size() == 3) {//three or more neighbors
 				
 				for(int j = 0; j < neighbors.size(); j++) {//remove each one of them
 					
@@ -296,9 +369,11 @@ public class Board {
 						numScores++; //update scores for new empty block
 					}
 				}
-			}
+			}*/
 			
 		}
+		
+		score += numScores;
 		
 		return numScores;
 	}
