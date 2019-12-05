@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ConcurrentModificationException;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -39,10 +40,14 @@ public class Canvas extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, Main.getWindow().getFrame().getWidth(), Main.getWindow().getFrame().getHeight());
 		
-		for (Block block : Main.getGame().getBlocks().values()) {
-			g.setColor(block.getColor());
-			g.fillRect(block.getDrawX(), block.getDrawY(), block.getWidth(), block.getHeight());
-		}
+		try {
+			//for (Block block : Main.getGame().getBlocks().values()) {
+			for (int blockID : Main.getGame().getBoard().getBlocks()) {
+				Block block = Main.getGame().getBlock(blockID);
+				g.setColor(block.getColor());
+				g.fillRect(block.getDrawX(), block.getDrawY(), block.getWidth(), block.getHeight());
+			}
+		} catch (Exception e) { }
 	}
 	
 	/*public void update() {

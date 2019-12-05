@@ -34,7 +34,8 @@ public class MouseHandler implements MouseListener {
 	private void click(Point point, boolean state) {
 		//System.out.println(point);
 		Block block;
-		for (Integer blockID : Main.getGame().getBlocks().keySet()) {
+		//for (Integer blockID : Main.getGame().getBlocks().keySet()) {
+		for (Integer blockID : Main.getGame().getBoard().getBlocks()) {
 			block = Main.getGame().getBlock(blockID);
 			if (point.x >= block.getX() && point.x <= block.getX() + block.getWidth() && point.y >= block.getY() && point.y <= block.getY() + block.getHeight()) {
 				if (state) {

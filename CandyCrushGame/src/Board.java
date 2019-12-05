@@ -21,7 +21,7 @@ public class Board {
 	 */
 	public Board(Game game) {
 		
-		this(4, 4, game);
+		this(8, 8, game);
 	}
 	
 	/**
@@ -44,7 +44,8 @@ public class Board {
 		
 		//System.out.println(getIndex(1, 1));
 		createEmptySpaces();
-		fillSpaces();
+		//fillSpaces();
+		tidyBoard();
 	}
 	
 	/**
@@ -64,6 +65,17 @@ public class Board {
 		tidyBoard(); //Fills all spaces, checks if any blocks can be scored, then refills spaces again in a loop
 	}
 	
+	public void printBoardState() {
+		System.out.println("Board State:");
+		for (int i = 0; i < tiles.size(); i++) {
+			if (i > 0 && i % width == 0) {
+				System.out.println("");
+			}
+			System.out.print(tiles.get(i) + " ");
+		}
+		System.out.println("");
+	}
+	
 	/**
 	 * returns canvas coordinates of grid index location
 	 * @param index
@@ -72,7 +84,7 @@ public class Board {
 	public Point getPositionCoords(int index) {
 		
 		int x = (int) (boardOrigin.getX() + (index % this.width) * game.getBlockSize());
-		int y = (int) (boardOrigin.getY() + ((int) index / this.height) * game.getBlockSize());
+		int y = (int) (boardOrigin.getY() + ((int) index / this.width) * game.getBlockSize());
 		return new Point(x, y);
 	}
 	
@@ -84,7 +96,7 @@ public class Board {
 	public Point getPosition(int index) {
 		
 		int x = index % this.width;
-		int y = index / this.height;
+		int y = index / this.width;
 		return new Point(x, y);
 	}
 	
@@ -100,16 +112,16 @@ public class Board {
 	}
 	
 	public void tidyBoard() {
-		do {
+		//do {
 			fillSpaces();
-		} while (scoreMatches() > 0);
+		//} while (scoreMatches() > 0);
 	}
 	
 	/**
 	 * fill all empty spaces after a move
 	 */
 	public void fillSpaces() {
-		boolean flag = true;
+		/*boolean flag = true;
 		while (flag) {
 			flag = false;
 			dropBlocks();
@@ -117,6 +129,14 @@ public class Board {
 				if (getBlock(i, 0) == EMPTY) {
 					putBlock(generateBlock(i, 0), i, 0);
 					flag = true;
+				}
+			}
+		}*/ //This code seems to work, but trying straight filling
+		
+		for (int i=0; i<width; i++) {
+			for (int j=0; j<height; j++) {
+				if (getBlock(i, j) == EMPTY) {
+					putBlock(generateBlock(i, j), i, j);
 				}
 			}
 		}
@@ -237,10 +257,11 @@ public class Board {
 	 * @param block
 	 * @return
 	 */
-	public ArrayList<Integer> getNeighbors(Integer blockID) {
+	public Set<Integer> getNeighbors(Integer blockID) {
 		
-		ArrayList<Integer> neighbors = new ArrayList<Integer>();
+		Set<Integer> neighbors = new HashSet<Integer>();
 		Point loc = getPosition(findBlock(blockID));
+		System.out.println("Getting neighbors about: " + loc.x + ", " + loc.y + " for blockID = " + blockID);
 		
 		if (loc.x - 1 >= 0) {
 			int neighbor = getBlock(loc.x - 1, loc.y);
@@ -294,7 +315,7 @@ public class Board {
 	 * @param block2 (block ID)
 	 */
 	public void attemptSwap(Integer block1, Integer block2) {
-		
+		System.out.println("Attempting Swap");
 		swapBlocks(findBlock(block1), findBlock(block2));
 		if (scoreMatches() <= 0) {
 			swapBlocks(findBlock(block1), findBlock(block2));
@@ -325,8 +346,8 @@ public class Board {
 			while (blocksToCheck.size() > 0) {
 				//Iterator<Integer> toCheck = blocksToCheck.iterator();
 				for (int check : blocksToCheck) {
-					System.out.println(game.getBlocks().containsKey(check) + " : " + check);
-					System.out.println(game.getBlocks().containsKey(getBlock(i)) + " :: " + getBlock(i));
+					//System.out.println(game.getBlocks().containsKey(check) + " : " + check);
+					//System.out.println(game.getBlocks().containsKey(getBlock(i)) + " :: " + getBlock(i));
 					if (game.getBlock(check).getColor() == game.getBlock(getBlock(i)).getColor()) {
 						matchingBlocks.add(check);
 						for (int neighbor : getNeighbors(check)) {
@@ -352,9 +373,14 @@ public class Board {
 			if (matchingBlocks.size() >= 3) {
 				numScores += matchingBlocks.size();
 				for (int blockID : matchingBlocks) {
-					tiles.set(findBlock(blockID), EMPTY);
+					if (findBlock(blockID) != EMPTY) {
+						tiles.set(findBlock(blockID), EMPTY);
+						game.removeBlock(blockID);
+					}
+					
 				}
 			}
+			matchingBlocks.clear();
 			//ArrayList<Integer> neighbors; // neighbors for each block
 			//neighbors = getNeighbors(tiles.get(i));
 			
@@ -384,6 +410,7 @@ public class Board {
 	 */
 	public void removeBlock(Integer blockID) {
 		tiles.set(blockID, Integer.MIN_VALUE);
+		game.removeBlock(blockID);
 	}
 	
 	/**
@@ -479,10 +506,10 @@ public class Board {
 	 * @param blockID
 	 * @return
 	 */
-	public Integer findBlock(Integer blockID) {
-		if (!tiles.contains(blockID)) {
+	public int findBlock(int blockID) {
+		/*if (!tiles.contains(blockID)) {
 			return EMPTY;
-		}
+		}*/
 		for (int i = 0; i < tiles.size(); i++) {
 			if (getBlock(i) == blockID) {
 				return i;
