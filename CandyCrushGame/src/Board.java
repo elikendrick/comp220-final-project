@@ -526,6 +526,10 @@ public class Board {
 		return tiles;
 	}
 	
+	public int getScore() {
+		return score;
+	}
+	
 	/**
 	 * returns game instance associated with this board
 	 * @return

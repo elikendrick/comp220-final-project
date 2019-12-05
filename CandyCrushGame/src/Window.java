@@ -23,6 +23,14 @@ public class Window {
 		this.height = frame.getContentPane().getHeight();
 	}
 	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
 	public JFrame getFrame() {
 		return this.frame;
 	}

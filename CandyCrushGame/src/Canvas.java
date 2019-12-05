@@ -40,6 +40,10 @@ public class Canvas extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, Main.getWindow().getFrame().getWidth(), Main.getWindow().getFrame().getHeight());
 		
+		char[] scoreData = ("Score: " + Integer.toString(Main.getGame().getBoard().getScore())).toCharArray();
+		g.setColor(Color.BLACK);
+		g.drawChars(scoreData, 0, scoreData.length, (Main.getWindow().getWidth()/2) - (g.getFontMetrics().charsWidth(scoreData, 0, scoreData.length) / 2), 50);
+		
 		try {
 			//for (Block block : Main.getGame().getBlocks().values()) {
 			for (int blockID : Main.getGame().getBoard().getBlocks()) {
