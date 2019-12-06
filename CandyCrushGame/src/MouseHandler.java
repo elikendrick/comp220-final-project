@@ -35,17 +35,21 @@ public class MouseHandler implements MouseListener {
 		//System.out.println(point);
 		Block block;
 		//for (Integer blockID : Main.getGame().getBlocks().keySet()) {
-		for (Integer blockID : Main.getGame().getBoard().getBlocks()) {
-			block = Main.getGame().getBlock(blockID);
-			if (point.x >= block.getX() && point.x <= block.getX() + block.getWidth() && point.y >= block.getY() && point.y <= block.getY() + block.getHeight()) {
-				if (state) {
-					Main.getGame().blockClicked(blockID);
-				} else {
-					Main.getGame().blockReleased(blockID);
+		try {
+			for (Integer blockID : Main.getGame().getBoard().getBlocks()) {
+				if (blockID != Main.getGame().getBoard().EMPTY) {
+					block = Main.getGame().getBlock(blockID);
+					if (point.x >= block.getX() && point.x <= block.getX() + block.getWidth() && point.y >= block.getY() && point.y <= block.getY() + block.getHeight()) {
+						if (state) {
+							Main.getGame().blockClicked(blockID);
+						} else {
+							Main.getGame().blockReleased(blockID);
+						}
+						break;
+					}
 				}
-				break;
 			}
-		}
+		} catch (Exception e) { }
 		
 		if (!state) {
 			Main.getGame().blockReleased(Board.EMPTY);

@@ -47,9 +47,11 @@ public class Canvas extends JPanel {
 		try {
 			//for (Block block : Main.getGame().getBlocks().values()) {
 			for (int blockID : Main.getGame().getBoard().getBlocks()) {
-				Block block = Main.getGame().getBlock(blockID);
-				g.setColor(block.getColor());
-				g.fillRect(block.getDrawX(), block.getDrawY(), block.getWidth(), block.getHeight());
+				if (blockID != Main.getGame().getBoard().EMPTY) {
+					Block block = Main.getGame().getBlock(blockID);
+					g.setColor(block.getColor());
+					g.fillRect(block.getDrawX(), block.getDrawY(), block.getWidth(), block.getHeight());
+				}
 			}
 		} catch (Exception e) { }
 	}

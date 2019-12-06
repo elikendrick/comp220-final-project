@@ -21,7 +21,7 @@ public class Board {
 	 */
 	public Board(Game game) {
 		
-		this(8, 8, game);
+		this(10, 10, game);
 	}
 	
 	/**
@@ -117,6 +117,15 @@ public class Board {
 		//} while (scoreMatches() > 0);
 	}
 	
+	public boolean containsEmpty() {
+		for (int i=0; i<tiles.size(); i++) {
+			if (tiles.get(i) == EMPTY) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * fill all empty spaces after a move
 	 */
@@ -133,10 +142,19 @@ public class Board {
 			}
 		}*/ //This code seems to work, but trying straight filling
 		
-		for (int i=0; i<width; i++) {
+		/*for (int i=0; i<width; i++) {
 			for (int j=0; j<height; j++) {
 				if (getBlock(i, j) == EMPTY) {
 					putBlock(generateBlock(i, j), i, j);
+				}
+			}
+		}*/ //This definitely works, switch back to this if having issues.
+		
+		while (containsEmpty()) {
+			dropBlocks();
+			for (int i=0; i<width; i++) {
+				if (tiles.get(i) == EMPTY) {
+					putBlock(generateBlock(i, 0), i, 0);
 				}
 			}
 		}
@@ -238,7 +256,7 @@ public class Board {
 	 */
 	public void dropBlocks() {
 		
-		for (int i = 0; i < width; i++) { //scan across board (left to right)
+		/*for (int i = 0; i < width; i++) { //scan across board (left to right)
 			for (int j = height - 1; j >= 0; j--) { //scan each column (bottom to top)
 				if (getBlock(i, j) == EMPTY) { //if an empty space is found:
 					for (int k = j; k >= 0; k--) { //scan the part of column above space
@@ -249,7 +267,21 @@ public class Board {
 					}
 				}
 			}
+		}*/
+		for (int i=0; i<width; i++) {
+			for (int j=height-1; j>=0; j--) {
+				if (getBlock(i, j) == EMPTY) {
+					for (int k=j-1; k>=0; k--) {
+						if (getBlock(i, k) != EMPTY) {
+							System.out.println("Dropping " + getIndex(i, k) + " to " + getIndex(i, j));
+							swapBlocks(getIndex(i, j), getIndex(i, k));
+							break;
+						}
+					}
+				}
+			}
 		}
+		printBoardState();
 	}
 	
 	/**
@@ -316,8 +348,11 @@ public class Board {
 	 */
 	public void attemptSwap(Integer block1, Integer block2) {
 		System.out.println("Attempting Swap");
+		Set<Integer> swappedBlocks = new HashSet<Integer>();
+		swappedBlocks.add(block1);
+		swappedBlocks.add(block2);
 		swapBlocks(findBlock(block1), findBlock(block2));
-		if (scoreMatches() <= 0) {
+		if (scoreMatches(swappedBlocks) <= 0) {
 			swapBlocks(findBlock(block1), findBlock(block2));
 		}
 	}
@@ -328,9 +363,14 @@ public class Board {
 	 * Return score of destroyed blocks (should return 0 if no blocks were destroyed)
 	 * @return
 	 */
-	public int scoreMatches() {
+	public int scoreMatches(Set<Integer> blockIDs) {
 		int numScores = 0;
-		for(int i = 0; i < tiles.size(); i++) {	//check all the block
+		Set<Integer> blockIndices = new HashSet<Integer>();
+		for (int ID : blockIDs) {
+			blockIndices.add(findBlock(ID));
+		}
+		//for(int i = 0; i < tiles.size(); i++) {	//check all the block
+		for (int i : blockIndices) {
 			if (getBlock(i) == EMPTY) {
 				continue;
 			}

@@ -169,39 +169,44 @@ public class Game implements Runnable {
 	 * Called every game tick.
 	 */
 	private void update() { //main game loop
-		
+		//getBoard().printBoardState();
 		if (clicked) {
 			int mouseX = MouseInfo.getPointerInfo().getLocation().x - Main.getWindow().getCanvas().getLocationOnScreen().x;
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y;
 			System.out.println("Clicked");
 			Block block;
 			//for (Integer blockID : Main.getGame().getBlocks().keySet()) {
-			for (Integer blockID : Main.getGame().getBoard().getBlocks()) {
-				block = Main.getGame().getBlock(blockID);
-				if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
-					System.out.println("Over block: " + blockID);
-					for (int blockNeighbs : board.getNeighbors(currentClicked)) {
-						System.out.print(blockNeighbs + " ");
+			for (Integer blockID : getBoard().getBlocks()) {
+				if (blockID != getBoard().EMPTY) {
+					block = getBlock(blockID);
+					if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
+						System.out.println("Over block: " + blockID);
+						for (int blockNeighbs : board.getNeighbors(currentClicked)) {
+							System.out.print(blockNeighbs + " ");
+						}
+						System.out.println("for block: " + currentClicked);
+						board.printBoardState();
+						System.out.println("Total rendered: " + blocks.size());
+						if (board.getNeighbors(currentClicked).contains(blockID)) {
+							System.out.println("Neighboring block clicked");
+							board.attemptSwap(currentClicked, blockID);
+							board.tidyBoard();
+							//board.dropBlocks();
+							clicked = false;
+							currentClicked = Board.EMPTY;
+						}
+						//swap this block with the currentClicked block
+						break;
 					}
-					System.out.println("for block: " + currentClicked);
-					board.printBoardState();
-					System.out.println("Total rendered: " + blocks.size());
-					if (board.getNeighbors(currentClicked).contains(blockID)) {
-						System.out.println("Neighboring block clicked");
-						board.attemptSwap(currentClicked, blockID);
-						board.tidyBoard();
-						clicked = false;
-						currentClicked = Board.EMPTY;
-					}
-					//swap this block with the currentClicked block
-					break;
 				}
 			}
 			//System.out.println(MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y);
 		}
 		
 		for (Integer blockID : getBoard().getBlocks()) {
-			blocks.get(blockID).updateAnimation();
+			if (blockID != getBoard().EMPTY) {
+				blocks.get(blockID).updateAnimation();
+			}
 		}
 	}
 	
