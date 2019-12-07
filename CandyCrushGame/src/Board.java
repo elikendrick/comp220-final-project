@@ -114,7 +114,12 @@ public class Board {
 	public void tidyBoard() {
 		//do {
 			fillSpaces();
-		//} while (scoreMatches() > 0);
+		//} 
+		
+//		  if (score == 0) { 
+//			  scoreMatches();
+//		  }
+		 
 	}
 	
 	public boolean containsEmpty() {
