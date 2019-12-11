@@ -106,12 +106,12 @@ public class Game implements Runnable {
 			case 2:
 				color = Color.YELLOW;
 				break;
-			case 3:
-				color = Color.GREEN;
-				break;
-			case 4:
-				color = Color.ORANGE;
-				break;
+			//case 3:
+				//color = Color.GREEN;
+				//break;
+			//case 4:
+				//color = Color.ORANGE;
+			//	break;
 			case 5:
 				color = Color.MAGENTA;
 				break;
