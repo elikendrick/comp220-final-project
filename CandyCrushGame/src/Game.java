@@ -94,7 +94,7 @@ public class Game implements Runnable {
 		
 		Color color;
 		
-		int c = random.nextInt(6);
+		int c = random.nextInt(4);
 		
 		switch(c) {
 			case 0:
@@ -104,7 +104,7 @@ public class Game implements Runnable {
 				color = Color.BLUE;
 				break;
 			case 2:
-				color = Color.YELLOW;
+				color = Color.ORANGE;
 				break;
 			//case 3:
 				//color = Color.GREEN;
@@ -112,8 +112,8 @@ public class Game implements Runnable {
 			//case 4:
 				//color = Color.ORANGE;
 			//	break;
-			case 5:
-				color = Color.MAGENTA;
+			case 3:
+				color = Color.CYAN;
 				break;
 			default:
 				color = Color.BLACK;
