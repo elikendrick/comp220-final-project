@@ -9,7 +9,7 @@ public class Window {
 	public Window(int width, int height) {
 		frame = new JFrame();
 		
-		frame.setTitle("Candy Crush");
+		frame.setTitle("Tetris Crush");
 		frame.setUndecorated(false);
 		frame.setSize(width, height);
 		frame.setResizable(false);

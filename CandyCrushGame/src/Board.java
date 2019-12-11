@@ -33,7 +33,6 @@ public class Board {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		//this.EMPTY = Integer.MIN_VALUE;
 		int originX = (Main.getWindow().getFrame().getWidth() - (width * game.getBlockSize())) / 2;
 		int originY = (Main.getWindow().getFrame().getHeight() - (height * game.getBlockSize())) / 2;
 		this.boardOrigin = new Point((int) originX, (int) originY);
@@ -42,10 +41,6 @@ public class Board {
 		tiles = new ArrayList<>();
 		rand = new Random();
 		
-		//System.out.println(getIndex(1, 1));
-		//createEmptySpaces();
-		//fillSpaces();
-		//tidyBoard();
 		refreshBoard();
 	}
 	
@@ -53,17 +48,9 @@ public class Board {
 	 * refills total board with random tiles
 	 */
 	public void refreshBoard() {
-		/*tiles.clear();
-		for(int h =0; h < height; h++) {
-			for(int w = 0; w < width; w++) {
-				int c = rand.nextInt(6); //6 different color block
-				tiles.add(c);
-			}
-			//new row
-		}*/
+		
 		createEmptySpaces();
-		//fillSpaces();
-		//tidyBoard(); //Fills all spaces, checks if any blocks can be scored, then refills spaces again in a loop
+		
 		for (int i=0; i<height/3; i++) {
 			fillTopRow();
 		}
@@ -116,14 +103,8 @@ public class Board {
 	}
 	
 	public void tidyBoard() {
-		//do {
-			fillSpaces();
-		//} 
 		
-//		  if (score == 0) { 
-//			  scoreMatches();
-//		  }
-		 
+		fillSpaces();
 	}
 	
 	public boolean containsEmpty() {
@@ -139,25 +120,6 @@ public class Board {
 	 * fill all empty spaces after a move
 	 */
 	public void fillSpaces() {
-		/*boolean flag = true;
-		while (flag) {
-			flag = false;
-			dropBlocks();
-			for (int i = 0; i < width; i++) {
-				if (getBlock(i, 0) == EMPTY) {
-					putBlock(generateBlock(i, 0), i, 0);
-					flag = true;
-				}
-			}
-		}*/ //This code seems to work, but trying straight filling
-		
-		/*for (int i=0; i<width; i++) {
-			for (int j=0; j<height; j++) {
-				if (getBlock(i, j) == EMPTY) {
-					putBlock(generateBlock(i, j), i, j);
-				}
-			}
-		}*/ //This definitely works, switch back to this if having issues.
 		
 		while (containsEmpty()) {
 			dropBlocks();
@@ -166,34 +128,7 @@ public class Board {
 					putBlock(generateBlock(i, 0), i, 0);
 				}
 			}
-		}
-		
-		/*for(int i = tiles.size(); i > 0; i--) {// down to up
-			
-			if(tiles.get(i) == Integer.MIN_VALUE) { //Check if empty
-				boolean emptyC = false;	//empty column
-				
-				for(int j = 1; (i - j*width)> height; j++) { //(i-j*width) the # of block on top
-					if(tiles.get(i - j*width) == Integer.MIN_VALUE) {
-						emptyC = true; 
-					}
-					else {	//Switch top block 
-						int switchValue = tiles.get(i- j*(width-1));
-						tiles.set(i-j*width, Integer.MIN_VALUE);
-						tiles.set(i, switchValue);
-						emptyC = false;
-						break;
-					}
-				}
-				if(emptyC) {
-					//tiles.set(i, rand.nextInt(6)); // when column empty block replace by a new
-					//System.out.println("Adding block");
-					Point newCoords = getPositionCoords(i);
-					tiles.set(i, game.addBlock(newCoords.x, newCoords.y));
-				}
-			}
-		} */
-			
+		}	
 	}
 	
 	/**
@@ -216,92 +151,15 @@ public class Board {
 	
 	
 	/**
-	 * Check whether or not any valid moves exist
-	 * @return
-	 */
-	/*public boolean movesExist() {
-		boolean move = false;
-		for(int i = 0; i < tiles.size(); i++) {
-			if(i == 0) {//corner 1
-				if (tiles.get(i) == tiles.get(i +1) || tiles.get(i)== tiles.get(i + width)) {
-					move = true;
-					break;
-				}
-			}
-			else if(i == (width - 1)) {//corner 2
-				if(tiles.get(i) == tiles.get(i-1) || tiles.get(i)== tiles.get(i + width))
-				move = true;
-				break;
-			}
-			else if(i == (width*(height - 1)) ) {//corner 3
-				if(tiles.get(i) == tiles.get(i- width) || tiles.get(i)== tiles.get(i + 1))
-				move = true;
-				break;
-			}
-			else if(i == ((width*height) - 1) ) {//corner 4
-				if(tiles.get(i) == tiles.get(i- width) || tiles.get(i)== tiles.get(i - 1))
-				move = true;
-				break;
-			}
-			else if(i < width) {//top row
-				if(tiles.get(i) == tiles.get(i + width) || tiles.get(i) == tiles.get(i+1) || tiles.get(i) == tiles.get(i - 1)) {
-					move = true;
-					break;
-				}
-			}
-			else if(i < width) {//bottom row
-				if(tiles.get(i) == tiles.get(i - width) || tiles.get(i) == tiles.get(i+1) || tiles.get(i) == tiles.get(i - 1)) {
-					move = true;
-					break;
-				}
-			}
-			else if((i%width) == 0 ) {//rigth col
-				if(tiles.get(i) == tiles.get(i - 1) || tiles.get(i) == tiles.get(i+width) || tiles.get(i) == tiles.get(i - width)) {
-					move = true;
-					break;
-				}
-			}
-			else if((i%width) == (width - 1) ) {//left col
-				if(tiles.get(i) == tiles.get(i + 1) || tiles.get(i) == tiles.get(i+width) || tiles.get(i) == tiles.get(i - width)) {
-					move = true;
-					break;
-				}
-			}
-			else {//middle
-				if(tiles.get(i) == tiles.get(i+width) || tiles.get(i) == tiles.get(i - width)||
-						tiles.get(i) == tiles.get(i + 1) || tiles.get(i) == tiles.get(i - 1)) {
-					move = true;
-					break;
-				}
-			}
-		}
-		
-		return move;
-	}*/
-	
-	/**
 	 * move blocks down and fill new spaces
 	 */
 	public void dropBlocks() {
 		
-		/*for (int i = 0; i < width; i++) { //scan across board (left to right)
-			for (int j = height - 1; j >= 0; j--) { //scan each column (bottom to top)
-				if (getBlock(i, j) == EMPTY) { //if an empty space is found:
-					for (int k = j; k >= 0; k--) { //scan the part of column above space
-						if (getBlock(i, k) != EMPTY) { //if block is found:
-							putBlock(getBlock(i, k), i, j); //move block to previously found empty space
-							putBlock(EMPTY, i, k); //set found block to empty since it has been moved
-						}
-					}
-				}
-			}
-		}*/
 		for (int i=0; i<width; i++) {
 			for (int j=height-1; j>=0; j--) {
 				if (getBlock(i, j) == EMPTY) {
 					for (int k=j-1; k>=0; k--) {
 						if (getBlock(i, k) != EMPTY) {
-							System.out.println("Dropping " + getIndex(i, k) + " to " + getIndex(i, j));
 							swapBlocks(getIndex(i, j), getIndex(i, k));
 							break;
 						}
@@ -309,7 +167,6 @@ public class Board {
 				}
 			}
 		}
-		printBoardState();
 	}
 	
 	/**
@@ -321,11 +178,9 @@ public class Board {
 		
 		Set<Integer> neighbors = new HashSet<Integer>();
 		Point loc = getPosition(findBlock(blockID));
-		System.out.println("Getting neighbors about: " + loc.x + ", " + loc.y + " for blockID = " + blockID);
 		
 		if (loc.x - 1 >= 0) {
 			int neighbor = getBlock(loc.x - 1, loc.y);
-			//neighbors.add(getBlock(loc.x - 1, loc.y));
 			if (neighbor != EMPTY) {
 				neighbors.add(neighbor);
 			}
@@ -362,10 +217,6 @@ public class Board {
 		int swap = getBlock(block1);
 		putBlock(getBlock(block2), block1);
 		putBlock(swap, block2);
-		/*int swap = tiles.get(blockID1);
-		tiles.set(blockID1, tiles.get(blockID2));
-		tiles.set(blockID2, swap);*/
-		
 	}
 	
 	/**
@@ -375,7 +226,7 @@ public class Board {
 	 * @param block2 (block ID)
 	 */
 	public void attemptSwap(Integer block1, Integer block2) {
-		System.out.println("Attempting Swap");
+		
 		Set<Integer> swappedBlocks = new HashSet<Integer>();
 		swappedBlocks.add(block1);
 		swappedBlocks.add(block2);
@@ -392,12 +243,13 @@ public class Board {
 	 * @return
 	 */
 	public int scoreMatches(Set<Integer> blockIDs) {
+		
 		int numScores = 0;
 		Set<Integer> blockIndices = new HashSet<Integer>();
 		for (int ID : blockIDs) {
 			blockIndices.add(findBlock(ID));
 		}
-		//for(int i = 0; i < tiles.size(); i++) {	//check all the block
+		
 		for (int i : blockIndices) {
 			if (getBlock(i) == EMPTY) {
 				continue;
@@ -412,20 +264,15 @@ public class Board {
 			blocksToCheck.addAll(getNeighbors(tiles.get(i)));
 			
 			while (blocksToCheck.size() > 0) {
-				//Iterator<Integer> toCheck = blocksToCheck.iterator();
 				for (int check : blocksToCheck) {
-					//System.out.println(game.getBlocks().containsKey(check) + " : " + check);
-					//System.out.println(game.getBlocks().containsKey(getBlock(i)) + " :: " + getBlock(i));
 					if (game.getBlock(check).getColor() == game.getBlock(getBlock(i)).getColor()) {
 						matchingBlocks.add(check);
 						for (int neighbor : getNeighbors(check)) {
 							if (!matchingBlocks.contains(neighbor)) {
-								//blocksToCheck.add(neighbor);
 								addToBlocksToCheck.add(neighbor);
 							}
 						}
 					}
-					//blocksToCheck.remove(check);
 					removeFromBlocksToCheck.add(check);
 				}
 				for (int block : addToBlocksToCheck) {
@@ -449,22 +296,6 @@ public class Board {
 				}
 			}
 			matchingBlocks.clear();
-			//ArrayList<Integer> neighbors; // neighbors for each block
-			//neighbors = getNeighbors(tiles.get(i));
-			
-			
-			
-			/*if(neighbors.size() > 3 || neighbors.size() == 3) {//three or more neighbors
-				
-				for(int j = 0; j < neighbors.size(); j++) {//remove each one of them
-					
-					if(neighbors.get(j) != Integer.MIN_VALUE) {//only count new neighbors
-						removeBlock(neighbors.get(j));
-						numScores++; //update scores for new empty block
-					}
-				}
-			}*/
-			
 		}
 		
 		if (numScores <= 3) {
@@ -536,11 +367,7 @@ public class Board {
 	 * @return
 	 */
 	public Integer getBlock(int x, int y) {
-		/*try {
-			return tiles.get(getIndex(x, y));
-		} catch (IndexOutOfBoundsException e) {
-			return EMPTY;
-		}*/
+		
 		return getBlock(getIndex(x, y));
 	}
 	
@@ -603,9 +430,7 @@ public class Board {
 	 * @return
 	 */
 	public int findBlock(int blockID) {
-		/*if (!tiles.contains(blockID)) {
-			return EMPTY;
-		}*/
+		
 		for (int i = 0; i < tiles.size(); i++) {
 			if (getBlock(i) == blockID) {
 				return i;

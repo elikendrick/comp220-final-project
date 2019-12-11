@@ -45,7 +45,6 @@ public class Game implements Runnable {
 		
 		currentClicked = board.EMPTY;
 		
-		//window.getFrame().addKeyListener(keyHandler);
 		window.getCanvas().addMouseListener(mouseHandler);
 		
 		lastRowAddition = System.currentTimeMillis();
@@ -53,9 +52,6 @@ public class Game implements Runnable {
 		playing = true;
 		
 		thread.start();
-		
-		//addBlock(50, 100);
-		//addBlock(200, 300);
 	}
 	
 	/**
@@ -103,12 +99,6 @@ public class Game implements Runnable {
 			case 2:
 				color = Color.ORANGE;
 				break;
-			//case 3:
-				//color = Color.GREEN;
-				//break;
-			//case 4:
-				//color = Color.ORANGE;
-			//	break;
 			case 3:
 				color = Color.CYAN;
 				break;
@@ -128,15 +118,15 @@ public class Game implements Runnable {
 	 * @return
 	 */
 	public int addBlock(int x, int y) {
+		
 		Block block = new Block(x, y, getBoard());
 		blocks.put(block.getID(), block);
 		return block.getID();
 	}
 	
 	public void removeBlock(int blockID) {
-		System.out.println("Before removal: " + blocks.size());
+		
 		blocks.remove(blockID);
-		System.out.println("After removal: " + blocks.size());
 	}
 	
 	/**
@@ -144,11 +134,9 @@ public class Game implements Runnable {
 	 * @param blockID
 	 */
 	public void blockClicked(int blockID) {
+		
 		clicked = true;
 		currentClicked = blockID;
-		
-		System.out.println(blockID);
-		//board.swapBlocks(1, 2);
 	}
 	
 	/**
@@ -174,7 +162,6 @@ public class Game implements Runnable {
 	 * Called every game tick.
 	 */
 	private void update() { //main game loop
-		//getBoard().printBoardState();
 		
 		if (System.currentTimeMillis() - lastRowAddition > rowAdditionInterval) {
 			if (!getBoard().fillTopRow()) {
@@ -186,35 +173,23 @@ public class Game implements Runnable {
 		if (clicked) {
 			int mouseX = MouseInfo.getPointerInfo().getLocation().x - Main.getWindow().getCanvas().getLocationOnScreen().x;
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y;
-			System.out.println("Clicked");
+			
 			Block block;
-			//for (Integer blockID : Main.getGame().getBlocks().keySet()) {
+			
 			for (Integer blockID : getBoard().getBlocks()) {
 				if (blockID != getBoard().EMPTY) {
 					block = getBlock(blockID);
 					if (mouseX >= block.getX() && mouseX <= block.getX() + block.getWidth() && mouseY >= block.getY() && mouseY <= block.getY() + block.getHeight()) {
-						System.out.println("Over block: " + blockID);
-						for (int blockNeighbs : board.getNeighbors(currentClicked)) {
-							System.out.print(blockNeighbs + " ");
-						}
-						System.out.println("for block: " + currentClicked);
-						board.printBoardState();
-						System.out.println("Total rendered: " + blocks.size());
 						if (board.getNeighbors(currentClicked).contains(blockID)) {
-							System.out.println("Neighboring block clicked");
 							board.attemptSwap(currentClicked, blockID);
-							//board.tidyBoard(); //this should be added back to return to basic functionality
 							board.dropBlocks();
-							//board.dropBlocks();
 							clicked = false;
 							currentClicked = Board.EMPTY;
 						}
-						//swap this block with the currentClicked block
 						break;
 					}
 				}
 			}
-			//System.out.println(MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y);
 		}
 		
 		for (Integer blockID : getBoard().getBlocks()) {

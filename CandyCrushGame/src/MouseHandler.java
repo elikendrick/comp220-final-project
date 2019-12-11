@@ -19,13 +19,11 @@ public class MouseHandler implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -40,9 +38,9 @@ public class MouseHandler implements MouseListener {
 	}
 	
 	private void click(Point point, boolean state) {
-		//System.out.println(point);
+		
 		Block block;
-		//for (Integer blockID : Main.getGame().getBlocks().keySet()) {
+		
 		try {
 			for (Integer blockID : Main.getGame().getBoard().getBlocks()) {
 				if (blockID != Main.getGame().getBoard().EMPTY) {
