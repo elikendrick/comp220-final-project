@@ -21,7 +21,6 @@ public class Game implements Runnable {
 	private Window window;
 	private Thread thread;
 	private static Random random;
-	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
 	private Board board;
 	
@@ -39,7 +38,6 @@ public class Game implements Runnable {
 		this.IDTracker = 0;
 		this.clicked = false;
 		
-		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
 		random = new Random();
 		thread = new Thread(this);
@@ -48,7 +46,6 @@ public class Game implements Runnable {
 		currentClicked = board.EMPTY;
 		
 		//window.getFrame().addKeyListener(keyHandler);
-		window.getCanvas().addKeyListener(keyHandler);
 		window.getCanvas().addMouseListener(mouseHandler);
 		
 		lastRowAddition = System.currentTimeMillis();
