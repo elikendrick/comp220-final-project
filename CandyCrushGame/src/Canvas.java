@@ -37,12 +37,21 @@ public class Canvas extends JPanel {
 	 */
 	public void paintComponent(Graphics g) {
 		g.clearRect(0, 0, Main.getWindow().getFrame().getWidth(), Main.getWindow().getFrame().getHeight());
-		g.setColor(Color.WHITE);
+		if (Main.getGame().isPlaying()) {
+			g.setColor(Color.WHITE);
+		} else {
+			g.setColor(new Color(255, 201, 194));
+		}
 		g.fillRect(0, 0, Main.getWindow().getFrame().getWidth(), Main.getWindow().getFrame().getHeight());
 		
 		char[] scoreData = ("Score: " + Integer.toString(Main.getGame().getBoard().getScore())).toCharArray();
 		g.setColor(Color.BLACK);
 		g.drawChars(scoreData, 0, scoreData.length, (Main.getWindow().getWidth()/2) - (g.getFontMetrics().charsWidth(scoreData, 0, scoreData.length) / 2), 50);
+		
+		char[] restartData = ("RESTART").toCharArray();
+		g.setColor(Color.BLACK);
+		g.drawChars(restartData, 0, restartData.length, Main.getWindow().getWidth()/2 - 23, Main.getWindow().getHeight() - 35);
+		g.drawRect(Main.getWindow().getWidth()/2 - 28, Main.getWindow().getHeight() - 50, 65, 20);
 		
 		try {
 			//for (Block block : Main.getGame().getBlocks().values()) {
@@ -54,6 +63,7 @@ public class Canvas extends JPanel {
 				}
 			}
 		} catch (Exception e) { }
+		
 	}
 	
 	/*public void update() {

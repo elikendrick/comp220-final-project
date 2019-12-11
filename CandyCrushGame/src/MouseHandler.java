@@ -7,6 +7,14 @@ public class MouseHandler implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
+		Point point = e.getPoint();
+		if (point.x > Main.getWindow().getWidth()/2 - 28 && point.x < Main.getWindow().getWidth()/2 - 28 + 65) {
+			if (point.y > Main.getWindow().getHeight() - 50 && point.y < Main.getWindow().getHeight() - 50 + 20) {
+				Main.getGame().setPlaying(true);
+				Main.getGame().getBoard().refreshBoard();
+				Main.getGame().getBoard().resetScore();
+			}
+		}
 	}
 
 	@Override

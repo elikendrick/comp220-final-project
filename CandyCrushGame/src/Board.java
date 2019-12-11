@@ -43,9 +43,10 @@ public class Board {
 		rand = new Random();
 		
 		//System.out.println(getIndex(1, 1));
-		createEmptySpaces();
+		//createEmptySpaces();
 		//fillSpaces();
-		tidyBoard();
+		//tidyBoard();
+		refreshBoard();
 	}
 	
 	/**
@@ -62,7 +63,10 @@ public class Board {
 		}*/
 		createEmptySpaces();
 		//fillSpaces();
-		tidyBoard(); //Fills all spaces, checks if any blocks can be scored, then refills spaces again in a loop
+		//tidyBoard(); //Fills all spaces, checks if any blocks can be scored, then refills spaces again in a loop
+		for (int i=0; i<height/3; i++) {
+			fillTopRow();
+		}
 	}
 	
 	public void printBoardState() {
@@ -193,10 +197,29 @@ public class Board {
 	}
 	
 	/**
+	 * Returns false if top row already contains at least 1 block
+	 * @return
+	 */
+	public boolean fillTopRow() {
+		
+		boolean flag = true;
+		for (int i=0; i<width; i++) {
+			if (tiles.get(i) == EMPTY) {
+				putBlock(generateBlock(i, 0), i, 0);
+			} else {
+				flag = false;
+			}
+		}
+		dropBlocks();
+		return flag;
+	}
+	
+	
+	/**
 	 * Check whether or not any valid moves exist
 	 * @return
 	 */
-	public boolean movesExist() {
+	/*public boolean movesExist() {
 		boolean move = false;
 		for(int i = 0; i < tiles.size(); i++) {
 			if(i == 0) {//corner 1
@@ -254,7 +277,7 @@ public class Board {
 		}
 		
 		return move;
-	}
+	}*/
 	
 	/**
 	 * move blocks down and fill new spaces
@@ -444,7 +467,35 @@ public class Board {
 			
 		}
 		
-		score += numScores;
+		if (numScores <= 3) {
+			score += numScores;
+		} else if (numScores >= 10) {
+			score += numScores*2;
+		} else {
+			switch (numScores) {
+				case 4:
+					score += 5;
+					break;
+				case 5:
+					score += 7;
+					break;
+				case 6:
+					score += 9;
+					break;
+				case 7:
+					score += 11;
+					break;
+				case 8:
+					score += 13;
+					break;
+				case 9:
+					score += 16;
+					break;
+				default:
+					score += numScores;
+					break;
+			}
+		}
 		
 		return numScores;
 	}
@@ -573,6 +624,10 @@ public class Board {
 	
 	public int getScore() {
 		return score;
+	}
+	
+	public void resetScore() {
+		this.score = 0;
 	}
 	
 	/**

@@ -12,6 +12,10 @@ public class Game implements Runnable {
 	
 	private boolean clicked;
 	private int currentClicked;
+	private boolean playing;
+	
+	private long lastRowAddition;
+	private int rowAdditionInterval;
 	
 	private static int fps, ups;
 	private Window window;
@@ -46,6 +50,10 @@ public class Game implements Runnable {
 		//window.getFrame().addKeyListener(keyHandler);
 		window.getCanvas().addKeyListener(keyHandler);
 		window.getCanvas().addMouseListener(mouseHandler);
+		
+		lastRowAddition = System.currentTimeMillis();
+		rowAdditionInterval = 3000;
+		playing = true;
 		
 		thread.start();
 		
@@ -170,6 +178,14 @@ public class Game implements Runnable {
 	 */
 	private void update() { //main game loop
 		//getBoard().printBoardState();
+		
+		if (System.currentTimeMillis() - lastRowAddition > rowAdditionInterval) {
+			if (!getBoard().fillTopRow()) {
+				playing = false;
+			}
+			lastRowAddition = System.currentTimeMillis();
+		}
+		
 		if (clicked) {
 			int mouseX = MouseInfo.getPointerInfo().getLocation().x - Main.getWindow().getCanvas().getLocationOnScreen().x;
 			int mouseY = MouseInfo.getPointerInfo().getLocation().y - Main.getWindow().getCanvas().getLocationOnScreen().y;
@@ -190,7 +206,8 @@ public class Game implements Runnable {
 						if (board.getNeighbors(currentClicked).contains(blockID)) {
 							System.out.println("Neighboring block clicked");
 							board.attemptSwap(currentClicked, blockID);
-							board.tidyBoard();
+							//board.tidyBoard(); //this should be added back to return to basic functionality
+							board.dropBlocks();
 							//board.dropBlocks();
 							clicked = false;
 							currentClicked = Board.EMPTY;
@@ -214,6 +231,14 @@ public class Game implements Runnable {
 		
 		return board;
 	}
+	
+	public boolean isPlaying() {
+		return playing;
+	}
+	
+	public void setPlaying(boolean state) {
+		this.playing = state;
+	}
 
 	@Override
 	public void run() {
@@ -231,7 +256,9 @@ public class Game implements Runnable {
 		while (true) {
 			loops = 0;
 			while (System.currentTimeMillis() > nextGameTick && loops < maxFrameSkips) {
-				update();
+				if (playing) {
+					update();
+				}
 				nextGameTick += gameSkipTicks;
 				loops ++;
 				updates ++;
