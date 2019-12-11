@@ -21,7 +21,7 @@ public class Board {
 	 */
 	public Board(Game game) {
 		
-		this(10, 10, game);
+		this(8, 12, game);
 	}
 	
 	/**

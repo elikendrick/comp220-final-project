@@ -14,7 +14,7 @@ public class Main {
 
 			@Override
 			public void run() {
-				window = new Window(1000, 600);
+				window = new Window(750, 700);
 				game = new Game(window);
 			}
 			
